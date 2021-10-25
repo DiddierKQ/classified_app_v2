@@ -64,6 +64,7 @@ class _ListAdsScreenState extends State<ListAdsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: CustomColors.mainColor,
         title: const Text(
           'Ads Listing',
