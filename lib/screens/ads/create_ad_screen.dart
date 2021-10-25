@@ -34,6 +34,7 @@ class _CreateAdScreenState extends State<CreateAdScreen> {
     var pickedFiles = await picker.pickMultiImage();
 
     if (pickedFiles!.isNotEmpty) {
+      imagesUploaded.clear();
       for (var image in pickedFiles) {
         File img = File(image.path);
         var rng = Random();
@@ -57,6 +58,18 @@ class _CreateAdScreenState extends State<CreateAdScreen> {
     }
   }
 
+  // uploadImages() async {
+  //   var res = await AdsController.uploadMultiImages();
+  //   if (res is List) {
+  //     imagesUploaded.clear();
+  //     setState(() {
+  //       imagesUploaded = res;
+  //     });
+  //   } else {
+  //     showScaffoldMessenger(res.toString());
+  //   }
+  // }
+
   // createAd() async {
   //   // Validate if there are pictures uploaded
   //   if (imagesUploaded.isNotEmpty) {
@@ -74,11 +87,13 @@ class _CreateAdScreenState extends State<CreateAdScreen> {
   //     });
   //   }else{
   //     showScaffoldMessenger('It is necessary to add pictures');
-  //   } 
+  //   }
   // }
 
-  createAdUsingController() async{
-    final ad = Ads(
+  createAdUsingController() async {
+    // Validate if there are pictures uploaded
+    if (imagesUploaded.isNotEmpty) {
+      final ad = Ads(
       title: _titleCtrl.text,
       description: _descriptionCtrl.text,
       price: _priceCtrl.text,
@@ -87,13 +102,15 @@ class _CreateAdScreenState extends State<CreateAdScreen> {
       images: imagesUploaded,
     );
     var res = await AdsController.createAd(ad);
-    if(res == 'success'){
+    if (res == 'success') {
       showScaffoldMessenger('Ad created successfully', 'success');
-    }else{
+    } else {
       showScaffoldMessenger(res);
     }
+    } else {
+      showScaffoldMessenger('It is necessary to add pictures');
+    }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -158,6 +175,7 @@ class _CreateAdScreenState extends State<CreateAdScreen> {
     return GestureDetector(
       onTap: () {
         uploadMultipleImg();
+        //uploadImages();
       },
       child: Container(
         alignment: Alignment.center,

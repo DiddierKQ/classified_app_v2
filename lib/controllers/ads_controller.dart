@@ -1,9 +1,15 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:classified_app_v2/models/ads_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+FirebaseStorage firebaseStorage = FirebaseStorage.instance;
 FirebaseAuth auth = FirebaseAuth.instance;
 
 class AdsController extends GetxController {
@@ -14,6 +20,32 @@ class AdsController extends GetxController {
   @override
   void onReady() {
     adsList.bindStream(getAds());
+  }
+
+  static Future<dynamic> uploadMultiImages() async {
+    var picker = ImagePicker();
+    var pickedFiles = await picker.pickMultiImage();
+
+    if (pickedFiles!.isNotEmpty) {
+      final List imagesUploaded = [];
+      for (var image in pickedFiles) {
+        File img = File(image.path);
+        var rng = Random();
+        firebaseStorage
+            .ref()
+            .child("images")
+            .child(rng.nextInt(10000).toString())
+            .putFile(img)
+            .then((res) {
+          res.ref.getDownloadURL().then((url){
+            imagesUploaded.add(url);
+          });
+        }).catchError((error) => error);
+      }
+      return imagesUploaded;
+    } else {
+      return 'Select photos';
+    }
   }
 
   // Method to create a new ad
