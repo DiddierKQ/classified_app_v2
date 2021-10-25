@@ -3,7 +3,6 @@ import 'package:classified_app_v2/screens/ads/list_ads_screen.dart';
 import 'package:classified_app_v2/screens/users/signup_screen.dart';
 import 'package:classified_app_v2/utils/colors_utils.dart';
 import 'package:classified_app_v2/utils/size_utils.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

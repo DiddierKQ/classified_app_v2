@@ -1,4 +1,3 @@
-import 'package:classified_app_v2/controllers/ads_controller.dart';
 import 'package:classified_app_v2/screens/ads/create_ad_screen.dart';
 import 'package:classified_app_v2/screens/users/settings_screen.dart';
 import 'package:classified_app_v2/utils/colors_utils.dart';

@@ -6,6 +6,7 @@ FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 
 class AuthController {
+  
   static Future<String> signInWithEmailAndPassword(
       String email, String password) async {
     return await firebaseAuth
@@ -29,6 +30,7 @@ class AuthController {
             "name": user.name,
             "email": user.email,
             "mobile": user.mobile,
+            "imgURL": user.imgURL,
             "uid": uid,
           })
           .then((value) => 'success')

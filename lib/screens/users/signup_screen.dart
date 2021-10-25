@@ -3,10 +3,8 @@ import 'package:classified_app_v2/models/users_model.dart';
 import 'package:classified_app_v2/screens/users/login_screen.dart';
 import 'package:classified_app_v2/utils/colors_utils.dart';
 import 'package:classified_app_v2/utils/size_utils.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -24,27 +22,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _mobileNumberCtrl = TextEditingController();
   final TextEditingController _passwordCtrl = TextEditingController();
 
-  register() {
-    FirebaseAuth.instance
-        .createUserWithEmailAndPassword(
-      email: _emailCtrl.text,
-      password: _passwordCtrl.text,
-    )
-        .then((res) {
-      showScaffoldMessenger('User created successfully', 'success');
+  // register() {
+  //   FirebaseAuth.instance
+  //       .createUserWithEmailAndPassword(
+  //     email: _emailCtrl.text,
+  //     password: _passwordCtrl.text,
+  //   )
+  //       .then((res) {
+  //     showScaffoldMessenger('User created successfully', 'success');
       
-      var uid = res.user?.uid;
-      FirebaseFirestore.instance.collection("users").doc(uid).set({
-        "name": _nameCtrl.text,
-        "email": _emailCtrl.text,
-        "mobile": _mobileNumberCtrl.text,
-        "uid": uid,
-      });
-      // Get.to(HomeScreen());
-    }).catchError((e) {
-      showScaffoldMessenger(e.toString());
-    });
-  }
+  //     var uid = res.user?.uid;
+  //     FirebaseFirestore.instance.collection("users").doc(uid).set({
+  //       "name": _nameCtrl.text,
+  //       "email": _emailCtrl.text,
+  //       "mobile": _mobileNumberCtrl.text,
+  //       "uid": uid,
+  //     });
+  //     // Get.to(HomeScreen());
+  //   }).catchError((e) {
+  //     showScaffoldMessenger(e.toString());
+  //   });
+  // }
 
   signupUsingController() async {
     final user = Users(
@@ -303,7 +301,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
           if (isValid) {
             _formkey.currentState!.save();
-            register();
+            //register();
+            signupUsingController();
           }
         },
         child: Text(

@@ -2,12 +2,12 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:classified_app_v2/controllers/auth_controller.dart';
+import 'package:classified_app_v2/controllers/users_controller.dart';
+import 'package:classified_app_v2/models/users_model.dart';
 import 'package:classified_app_v2/screens/users/login_screen.dart';
 import 'package:classified_app_v2/utils/colors_utils.dart';
 import 'package:classified_app_v2/utils/size_utils.dart';
 import 'package:classified_app_v2/widgets/appbar_widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -62,17 +62,32 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
   }
 
-  updateProfile() async {
-    var uid = FirebaseAuth.instance.currentUser!.uid;
+  // updateProfile() async {
+  //   var uid = FirebaseAuth.instance.currentUser!.uid;
 
-    await FirebaseFirestore.instance.collection("users").doc(uid).update({
-      "name": _nameCtrl.text,
-      "email": _emailCtrl.text,
-      "mobile": _mobileNumberCtrl.text,
-      "imgURL": widget.userData["imgURL"],
-    }).then((value) {
-      showScaffoldMessenger('Profile updated successfully', 'success');
-    });
+  //   await FirebaseFirestore.instance.collection("users").doc(uid).update({
+  //     "name": _nameCtrl.text,
+  //     "email": _emailCtrl.text,
+  //     "mobile": _mobileNumberCtrl.text,
+  //     "imgURL": widget.userData["imgURL"],
+  //   }).then((value) {
+  //     showScaffoldMessenger('Profile updated successfully', 'success');
+  //   });
+  // }
+
+  updateProfileUsingController() async {
+    final user = Users(
+      name: _nameCtrl.text,
+      email: _emailCtrl.text,
+      mobile: _mobileNumberCtrl.text,
+      imgURL: widget.userData["imgURL"],
+    );
+    var res = await UserController.updateUserProfile(user);
+    if(res == 'success'){
+      showScaffoldMessenger('Ad updated successfully', 'success');
+    }else{
+      showScaffoldMessenger(res);
+    }
   }
   
   // logout() async {
@@ -290,7 +305,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ),
         ),
         onPressed: () {
-          updateProfile();
+          //updateProfile();
+          updateProfileUsingController();
         },
         child: Text(
           'Update profile',
