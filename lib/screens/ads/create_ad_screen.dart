@@ -58,25 +58,25 @@ class _CreateAdScreenState extends State<CreateAdScreen> {
     }
   }
 
-  createAd() async {
-    // Validate if there are pictures uploaded
-    if (imagesUploaded.isNotEmpty) {
-      await FirebaseFirestore.instance.collection("ads").add({
-        "title": _titleCtrl.text,
-        "description": _descriptionCtrl.text,
-        "price": _priceCtrl.text,
-        "contactNumber": _contactNumberCtrl.text,
-        "uid": FirebaseAuth.instance.currentUser!.uid,
-        "images": imagesUploaded,
-      }).then((value) {
-        showScaffoldMessenger('Ad created successfully', 'success');
-      }).catchError((e) {
-        showScaffoldMessenger(e.toString());
-      });
-    }else{
-      showScaffoldMessenger('It is necessary to add pictures');
-    } 
-  }
+  // createAd() async {
+  //   // Validate if there are pictures uploaded
+  //   if (imagesUploaded.isNotEmpty) {
+  //     await FirebaseFirestore.instance.collection("ads").add({
+  //       "title": _titleCtrl.text,
+  //       "description": _descriptionCtrl.text,
+  //       "price": _priceCtrl.text,
+  //       "contactNumber": _contactNumberCtrl.text,
+  //       "uid": FirebaseAuth.instance.currentUser!.uid,
+  //       "images": imagesUploaded,
+  //     }).then((value) {
+  //       showScaffoldMessenger('Ad created successfully', 'success');
+  //     }).catchError((e) {
+  //       showScaffoldMessenger(e.toString());
+  //     });
+  //   }else{
+  //     showScaffoldMessenger('It is necessary to add pictures');
+  //   } 
+  // }
 
   createAdUsingController() async{
     final ad = Ads(

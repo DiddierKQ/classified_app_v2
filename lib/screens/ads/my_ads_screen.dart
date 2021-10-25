@@ -1,4 +1,3 @@
-import 'package:classified_app_v2/controllers/ads_controller.dart';
 import 'package:classified_app_v2/utils/colors_utils.dart';
 import 'package:classified_app_v2/utils/size_utils.dart';
 import 'package:classified_app_v2/widgets/appbar_widget.dart';
@@ -62,10 +61,22 @@ class _MyAdsScreenState extends State<MyAdsScreen> {
         title: 'My ads',
         enableReturnButton: true,
       ),
-      body: Center(
-        child: Container(
-          //padding: const EdgeInsets.all(4.0),
-          child: _ads.isEmpty ? const Text('') : buildLisView(),
+      body: RefreshIndicator(
+        backgroundColor: CustomColors.buttonColor,
+        color: CustomColors.whiteColor,
+        onRefresh: () {
+          return Future.delayed(const Duration(seconds: 1), () {
+            setState(() {
+              getMyAds();
+            });
+            showScaffoldMessenger('Page Refreshed', 'success');
+          });
+        },
+        child: Center(
+          child: Container(
+            //padding: const EdgeInsets.all(4.0),
+            child: _ads.isEmpty ? const Text('') : buildLisView(),
+          ),
         ),
       ),
     );
@@ -82,8 +93,8 @@ class _MyAdsScreenState extends State<MyAdsScreen> {
     );
   }
 
-  // Create a dynamic notification
-  showScaffoldMessenger(message) {
+   // Create a dynamic notification
+  showScaffoldMessenger(message, [type = '']) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
@@ -92,7 +103,7 @@ class _MyAdsScreenState extends State<MyAdsScreen> {
             fontSize: getProportionateScreenWidth(12),
           ),
         ),
-        backgroundColor: Colors.red,
+        backgroundColor: type != '' ? Colors.green : Colors.red,
       ),
     );
   }

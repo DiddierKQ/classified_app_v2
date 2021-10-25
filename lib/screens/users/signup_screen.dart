@@ -1,3 +1,5 @@
+import 'package:classified_app_v2/controllers/auth_controller.dart';
+import 'package:classified_app_v2/models/users_model.dart';
 import 'package:classified_app_v2/screens/users/login_screen.dart';
 import 'package:classified_app_v2/utils/colors_utils.dart';
 import 'package:classified_app_v2/utils/size_utils.dart';
@@ -42,6 +44,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }).catchError((e) {
       showScaffoldMessenger(e.toString());
     });
+  }
+
+  signupUsingController() async {
+    final user = Users(
+      name: _nameCtrl.text,
+      email: _emailCtrl.text,
+      password: _passwordCtrl.text,
+      mobile: _mobileNumberCtrl.text,
+    );
+    var res = await AuthController.signUp(user);
+    if (res == 'success') {
+      showScaffoldMessenger('User created successfully', 'success');
+    } else {
+      showScaffoldMessenger(res);
+    }
   }
 
   @override

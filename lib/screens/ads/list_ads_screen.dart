@@ -1,9 +1,9 @@
+import 'package:classified_app_v2/controllers/ads_controller.dart';
 import 'package:classified_app_v2/screens/ads/create_ad_screen.dart';
 import 'package:classified_app_v2/screens/users/settings_screen.dart';
 import 'package:classified_app_v2/utils/colors_utils.dart';
 import 'package:classified_app_v2/utils/size_utils.dart';
 import 'package:classified_app_v2/widgets/card_ad_widget.dart';
-import 'package:classified_app_v2/widgets/scaffoldmessenger_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -123,7 +123,7 @@ class _ListAdsScreenState extends State<ListAdsScreen> {
       child: CircleAvatar(
         backgroundColor: CustomColors.greyColor,
         backgroundImage:
-            _user["imgURL"] != '' ? NetworkImage(_user["imgURL"]) : null,
+            _user.isNotEmpty ? NetworkImage(_user["imgURL"]) : null,
       ),
     );
   }

@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:classified_app_v2/controllers/ads_controller.dart';
+import 'package:classified_app_v2/models/ads_model.dart';
 import 'package:classified_app_v2/screens/ads/photoviewer_screen.dart';
 import 'package:classified_app_v2/utils/colors_utils.dart';
 import 'package:classified_app_v2/utils/size_utils.dart';
@@ -66,22 +68,40 @@ class _AdEditScreenState extends State<AdEditScreen> {
     }
   }
 
-  updateAd() async {
+  // updateAd() async {
+
+  //   var adId = widget.adData['ad_id'];
+
+  //   await FirebaseFirestore.instance.collection("ads").doc(adId).update({
+  //    "title": _titleCtrl.text,
+  //     "description": _descriptionCtrl.text,
+  //     "price": _priceCtrl.text,
+  //     "contactNumber": _contactNumberCtrl.text,
+  //     "uid": FirebaseAuth.instance.currentUser!.uid,
+  //     "images": imagesUploaded,
+  //   }).then((value) {
+  //     showScaffoldMessenger('Ad updated successfully', 'success');
+  //   });
+  // }
+
+  updateAdUsingController() async{
 
     var adId = widget.adData['ad_id'];
 
-    print(adId);
-
-    await FirebaseFirestore.instance.collection("ads").doc(adId).update({
-     "title": _titleCtrl.text,
-      "description": _descriptionCtrl.text,
-      "price": _priceCtrl.text,
-      "contactNumber": _contactNumberCtrl.text,
-      "uid": FirebaseAuth.instance.currentUser!.uid,
-      "images": imagesUploaded,
-    }).then((value) {
+    final ad = Ads(
+      title: _titleCtrl.text,
+      description: _descriptionCtrl.text,
+      price: _priceCtrl.text,
+      contactNumber: _contactNumberCtrl.text,
+      uid: FirebaseAuth.instance.currentUser!.uid,
+      images: imagesUploaded,
+    );
+    var res = await AdsController.updateAd(ad, adId);
+    if(res == 'success'){
       showScaffoldMessenger('Ad updated successfully', 'success');
-    });
+    }else{
+      showScaffoldMessenger(res);
+    }
   }
 
 
@@ -424,7 +444,8 @@ class _AdEditScreenState extends State<AdEditScreen> {
 
           if (isValid) {
             _formkey.currentState!.save();
-            updateAd();
+            //updateAd();
+            updateAdUsingController();
           }
         },
         child: Text(

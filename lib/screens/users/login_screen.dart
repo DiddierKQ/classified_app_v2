@@ -1,3 +1,4 @@
+import 'package:classified_app_v2/controllers/auth_controller.dart';
 import 'package:classified_app_v2/screens/ads/list_ads_screen.dart';
 import 'package:classified_app_v2/screens/users/signup_screen.dart';
 import 'package:classified_app_v2/utils/colors_utils.dart';
@@ -20,17 +21,29 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailCtrl = TextEditingController();
   final TextEditingController _passwordCtrl = TextEditingController();
 
-  login() async {
-    await FirebaseAuth.instance
-        .signInWithEmailAndPassword(
-      email: _emailCtrl.text,
-      password: _passwordCtrl.text,
-    )
-        .then((value) {
-      Get.to(()=> const ListAdsScreen());
-    }).catchError((e) {
-      showScaffoldMessenger(e.toString());
-    });
+  // login() async {
+  //   await FirebaseAuth.instance
+  //       .signInWithEmailAndPassword(
+  //     email: _emailCtrl.text,
+  //     password: _passwordCtrl.text,
+  //   )
+  //       .then((value) {
+  //     Get.to(() => const ListAdsScreen());
+  //   }).catchError((e) {
+  //     showScaffoldMessenger(e.toString());
+  //   });
+  // }
+
+  loginUsingController() async {
+    var res = await AuthController.signInWithEmailAndPassword(
+      _emailCtrl.text,
+      _passwordCtrl.text,
+    );
+    if (res == 'success') {
+      Get.to(() => const ListAdsScreen());
+    } else {
+      showScaffoldMessenger(res);
+    }
   }
 
   @override
@@ -201,7 +214,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
           if (isValid) {
             _formkey.currentState!.save();
-            login();
+            //login();
+            loginUsingController();
           }
         },
         child: Text(

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:classified_app_v2/controllers/auth_controller.dart';
 import 'package:classified_app_v2/screens/users/login_screen.dart';
 import 'package:classified_app_v2/utils/colors_utils.dart';
 import 'package:classified_app_v2/utils/size_utils.dart';
@@ -74,10 +75,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     });
   }
   
-  logout() async {
-    await FirebaseAuth.instance.signOut().then((value) {
+  // logout() async {
+  //   await FirebaseAuth.instance.signOut().then((value) {
+  //     Get.offAll(()=> const LoginScreen());
+  //   });
+  // }
+
+  logoutUsingController() async {
+    var res = await AuthController.signOut();
+    if(res == 'success'){
       Get.offAll(()=> const LoginScreen());
-    });
+    }else{
+      showScaffoldMessenger(res);
+    }
   }
 
   @override
@@ -341,7 +351,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ),
           TextButton(
             onPressed: () {
-              logout();
+              //logout();
+              logoutUsingController();
             },
             child: const Text('OK'),
           ),
