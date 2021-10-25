@@ -1,6 +1,3 @@
-import 'dart:io';
-import 'dart:math';
-
 import 'package:classified_app_v2/controllers/auth_controller.dart';
 import 'package:classified_app_v2/controllers/users_controller.dart';
 import 'package:classified_app_v2/models/users_model.dart';
@@ -8,10 +5,8 @@ import 'package:classified_app_v2/screens/users/login_screen.dart';
 import 'package:classified_app_v2/utils/colors_utils.dart';
 import 'package:classified_app_v2/utils/size_utils.dart';
 import 'package:classified_app_v2/widgets/appbar_widget.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 
 // ignore: must_be_immutable
 class EditProfileScreen extends StatefulWidget {
@@ -36,29 +31,40 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final TextEditingController _emailCtrl = TextEditingController();
   final TextEditingController _mobileNumberCtrl = TextEditingController();
 
-  uploadImg() async {
-    var picker = ImagePicker();
-    var pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile!.path.isNotEmpty) {
-      File image = File(pickedFile.path);
-      var rng = Random();
+  // uploadImg() async {
+  //   var picker = ImagePicker();
+  //   var pickedFile = await picker.pickImage(source: ImageSource.gallery);
+  //   if (pickedFile!.path.isNotEmpty) {
+  //     File image = File(pickedFile.path);
+  //     var rng = Random();
 
-      FirebaseStorage.instance
-          .ref()
-          .child("users")
-          .child(rng.nextInt(10000).toString())
-          .putFile(image)
-          .then((res) {
-        res.ref.getDownloadURL().then((url) {
-          setState(() {
-            widget.userData["imgURL"] = url;
-          });
-        });
-      }).catchError((e) {
-        showScaffoldMessenger(e.toString());
+  //     FirebaseStorage.instance
+  //         .ref()
+  //         .child("users")
+  //         .child(rng.nextInt(10000).toString())
+  //         .putFile(image)
+  //         .then((res) {
+  //       res.ref.getDownloadURL().then((url) {
+  //         setState(() {
+  //           widget.userData["imgURL"] = url;
+  //         });
+  //       });
+  //     }).catchError((e) {
+  //       showScaffoldMessenger(e.toString());
+  //     });
+  //   } else {
+  //     showScaffoldMessenger('Select photos');
+  //   }
+  // }
+
+  uploadProfilePicture() async {
+    var res = await UserController.uploadImg();
+    if (res is String) {
+      setState(() {
+        widget.userData["imgURL"] = res;
       });
     } else {
-      showScaffoldMessenger('Select photos');
+      showScaffoldMessenger(res.toString());
     }
   }
 
@@ -83,13 +89,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       imgURL: widget.userData["imgURL"],
     );
     var res = await UserController.updateUserProfile(user);
-    if(res == 'success'){
+    if (res == 'success') {
       showScaffoldMessenger('Ad updated successfully', 'success');
-    }else{
+    } else {
       showScaffoldMessenger(res);
     }
   }
-  
+
   // logout() async {
   //   await FirebaseAuth.instance.signOut().then((value) {
   //     Get.offAll(()=> const LoginScreen());
@@ -98,9 +104,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   logoutUsingController() async {
     var res = await AuthController.signOut();
-    if(res == 'success'){
-      Get.offAll(()=> const LoginScreen());
-    }else{
+    if (res == 'success') {
+      Get.offAll(() => const LoginScreen());
+    } else {
       showScaffoldMessenger(res);
     }
   }
@@ -172,12 +178,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   GestureDetector buildProfilePicture() {
     return GestureDetector(
       onTap: () {
-        uploadImg();
+        uploadProfilePicture();
       },
       child: CircleAvatar(
         backgroundColor: CustomColors.greyColor,
         maxRadius: getProportionateScreenHeight(48),
-        backgroundImage: widget.userData["imgURL"] != '' ? NetworkImage(widget.userData["imgURL"]) : null,
+        backgroundImage: widget.userData["imgURL"] != ''
+            ? NetworkImage(widget.userData["imgURL"])
+            : null,
       ),
     );
   }
