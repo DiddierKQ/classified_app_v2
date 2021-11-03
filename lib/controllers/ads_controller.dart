@@ -22,7 +22,7 @@ class AdsController extends GetxController {
     adsList.bindStream(getAds());
   }
 
-  static Future<dynamic> uploadMultiImages() async {
+  Future<dynamic> uploadMultiImages() async {
     var picker = ImagePicker();
     var pickedFiles = await picker.pickMultiImage();
 

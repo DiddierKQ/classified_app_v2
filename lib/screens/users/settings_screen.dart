@@ -1,3 +1,4 @@
+import 'package:classified_app_v2/controllers/auth_controller.dart';
 import 'package:classified_app_v2/screens/ads/my_ads_screen.dart';
 import 'package:classified_app_v2/screens/users/edit_profile_screen.dart';
 import 'package:classified_app_v2/utils/colors_utils.dart';
@@ -9,19 +10,21 @@ import 'package:url_launcher/url_launcher.dart';
 
 // ignore: must_be_immutable
 class SettingsScreen extends StatelessWidget {
-  //const SettingsScreen({Key? key}) : super(key: key);
+  const SettingsScreen({Key? key}) : super(key: key);
 
-  var userData = {};
+  // var userData = {};
 
-  SettingsScreen({
-    Key? key,
-    required this.userData,
-  }) : super(key: key);
+  // SettingsScreen({
+  //   Key? key,
+  //   required this.userData,
+  // }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // Initialice the Sizeconfig with the context
     SizeConfig(context);
+
+    final AuthController _authController = Get.put(AuthController());
 
     _launchURL(_url) async => await canLaunch(_url)
         ? await launch(_url)
@@ -44,33 +47,35 @@ class SettingsScreen extends StatelessWidget {
                 children: [
                   ListTile(
                     onTap: () {
-                      Get.to(() => EditProfileScreen(
-                            userData: userData,
-                          ));
+                      Get.to(() => const EditProfileScreen());
                     },
-                    leading: CircleAvatar(
-                      backgroundColor: CustomColors.greyColor,
-                      backgroundImage: userData['imgURL'] != ''
-                          ? NetworkImage(userData['imgURL'])
-                          : null,
-                    ),
-                    title: Text(
-                      userData['name'],
-                      style: TextStyle(
-                        fontSize: getProportionateScreenWidth(14),
+                    leading: Obx(()=>
+                      CircleAvatar(
+                        backgroundColor: CustomColors.greyColor,
+                        backgroundImage: _authController.userObj['imgURL'] != ''
+                            ? NetworkImage(_authController.userObj['imgURL'])
+                            : null,
                       ),
                     ),
-                    subtitle: Text(
-                      userData['mobile'],
-                      style: TextStyle(
-                        fontSize: getProportionateScreenWidth(12),
+                    title: Obx(()=>
+                      Text(
+                        _authController.userObj['name'],
+                        style: TextStyle(
+                          fontSize: getProportionateScreenWidth(14),
+                        ),
+                      ),
+                    ),
+                    subtitle: Obx(()=>
+                      Text(
+                        _authController.userObj['mobile'],
+                        style: TextStyle(
+                          fontSize: getProportionateScreenWidth(12),
+                        ),
                       ),
                     ),
                     trailing: TextButton(
                       onPressed: () {
-                        Get.to(() => EditProfileScreen(
-                              userData: userData,
-                            ));
+                        Get.to(() => const EditProfileScreen());
                       },
                       child: Text(
                         "Edit",

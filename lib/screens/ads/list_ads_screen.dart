@@ -1,3 +1,4 @@
+import 'package:classified_app_v2/controllers/auth_controller.dart';
 import 'package:classified_app_v2/screens/ads/create_ad_screen.dart';
 import 'package:classified_app_v2/screens/users/settings_screen.dart';
 import 'package:classified_app_v2/utils/colors_utils.dart';
@@ -16,15 +17,13 @@ class ListAdsScreen extends StatefulWidget {
 }
 
 class _ListAdsScreenState extends State<ListAdsScreen> {
+  final AuthController _authController = Get.put(AuthController());
 
   List _ads = [];
   var _user = {};
 
   getAds() async {
-    await FirebaseFirestore.instance
-        .collection("ads")
-        .get()
-        .then((res) {
+    await FirebaseFirestore.instance.collection("ads").get().then((res) {
       var tmpAds = [];
       for (var ad in res.docs) {
         tmpAds.add({
@@ -37,22 +36,22 @@ class _ListAdsScreenState extends State<ListAdsScreen> {
       }
       setState(() {
         _ads = tmpAds;
-        getCurrentUser();
+        //getCurrentUser();
       });
     }).catchError((e) {
       showScaffoldMessenger(e.toString());
     });
   }
 
-  getCurrentUser() {
-    var uid = FirebaseAuth.instance.currentUser!.uid;
-    FirebaseFirestore.instance.collection("users").doc(uid).get().then((user) {
-      var userData = user.data()!;
-      setState(() {
-        _user = userData;
-      });
-    });
-  }
+  // getCurrentUser() {
+  //   var uid = FirebaseAuth.instance.currentUser!.uid;
+  //   FirebaseFirestore.instance.collection("users").doc(uid).get().then((user) {
+  //     var userData = user.data()!;
+  //     setState(() {
+  //       _user = userData;
+  //     });
+  //   });
+  // }
 
   @override
   void initState() {
@@ -73,9 +72,7 @@ class _ListAdsScreenState extends State<ListAdsScreen> {
         actions: [
           GestureDetector(
             onTap: () {
-              Get.to(() => SettingsScreen(
-                    userData: _user,
-                  ));
+              Get.to(() => const SettingsScreen());
             },
             child: Container(
               alignment: Alignment.center,
@@ -120,10 +117,13 @@ class _ListAdsScreenState extends State<ListAdsScreen> {
       padding: EdgeInsets.only(
         right: getProportionateScreenWidth(4),
       ),
-      child: CircleAvatar(
-        backgroundColor: CustomColors.greyColor,
-        backgroundImage:
-            _user.isNotEmpty ? NetworkImage(_user["imgURL"]) : null,
+      child: Obx(
+        () => CircleAvatar(
+          backgroundColor: CustomColors.greyColor,
+          backgroundImage: _authController.userObj["imgURL"] != null
+              ? NetworkImage(_authController.userObj["imgURL"])
+              : null,
+        ),
       ),
     );
   }

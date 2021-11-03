@@ -20,6 +20,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailCtrl = TextEditingController();
   final TextEditingController _passwordCtrl = TextEditingController();
 
+  AuthController _authController = Get.put(AuthController());
+
   // login() async {
   //   await FirebaseAuth.instance
   //       .signInWithEmailAndPassword(
@@ -34,12 +36,12 @@ class _LoginScreenState extends State<LoginScreen> {
   // }
 
   loginUsingController() async {
-    var res = await AuthController.signInWithEmailAndPassword(
+    var res = await _authController.signInWithEmailAndPassword(
       _emailCtrl.text,
       _passwordCtrl.text,
     );
     if (res == 'success') {
-      Get.to(() => const ListAdsScreen());
+      Get.offAll( const ListAdsScreen());
     } else {
       showScaffoldMessenger(res);
     }

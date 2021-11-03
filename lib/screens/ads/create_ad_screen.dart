@@ -9,6 +9,7 @@ import 'package:classified_app_v2/widgets/appbar_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CreateAdScreen extends StatefulWidget {
@@ -26,6 +27,8 @@ class _CreateAdScreenState extends State<CreateAdScreen> {
   final TextEditingController _priceCtrl = TextEditingController();
   final TextEditingController _contactNumberCtrl = TextEditingController();
   final TextEditingController _descriptionCtrl = TextEditingController();
+
+  final AdsController _adsController = Get.put(AdsController());
 
   var imagesUploaded = [];
 
@@ -58,17 +61,17 @@ class _CreateAdScreenState extends State<CreateAdScreen> {
     }
   }
 
-  // uploadImages() async {
-  //   var res = await AdsController.uploadMultiImages();
-  //   if (res is List) {
-  //     imagesUploaded.clear();
-  //     setState(() {
-  //       imagesUploaded = res;
-  //     });
-  //   } else {
-  //     showScaffoldMessenger(res.toString());
-  //   }
-  // }
+  uploadImages() async {
+    var res = await _adsController.uploadMultiImages();
+    if (res is List) {
+      imagesUploaded.clear();
+      setState(() async {
+        imagesUploaded = res;
+      });
+    } else {
+      showScaffoldMessenger(res.toString());
+    }
+  }
 
   // createAd() async {
   //   // Validate if there are pictures uploaded
@@ -173,7 +176,7 @@ class _CreateAdScreenState extends State<CreateAdScreen> {
   // Create icon to upload photo
   GestureDetector buildUploadPhotoIcon() {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         uploadMultipleImg();
         //uploadImages();
       },

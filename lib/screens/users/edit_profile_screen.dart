@@ -10,14 +10,14 @@ import 'package:get/get.dart';
 
 // ignore: must_be_immutable
 class EditProfileScreen extends StatefulWidget {
-  //const EditProfileScreen({ Key? key }) : super(key: key);
+  const EditProfileScreen({ Key? key }) : super(key: key);
 
-  var userData = {};
+  // var userData = {};
 
-  EditProfileScreen({
-    Key? key,
-    required this.userData,
-  }) : super(key: key);
+  // EditProfileScreen({
+  //   Key? key,
+  //   required this.userData,
+  // }) : super(key: key);
 
   @override
   _EditProfileScreenState createState() => _EditProfileScreenState();
@@ -30,6 +30,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final TextEditingController _nameCtrl = TextEditingController();
   final TextEditingController _emailCtrl = TextEditingController();
   final TextEditingController _mobileNumberCtrl = TextEditingController();
+
+  final AuthController _authController = Get.put(AuthController());
+  final UserController _userController = Get.put(UserController());
 
   // uploadImg() async {
   //   var picker = ImagePicker();
@@ -58,10 +61,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   // }
 
   uploadProfilePicture() async {
-    var res = await UserController.uploadImg();
+    var res = await _userController.uploadImg();
     if (res is String) {
       setState(() {
-        widget.userData["imgURL"] = res;
+        _authController.userObj["imgURL"] = res;
       });
     } else {
       showScaffoldMessenger(res.toString());
@@ -86,9 +89,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       name: _nameCtrl.text,
       email: _emailCtrl.text,
       mobile: _mobileNumberCtrl.text,
-      imgURL: widget.userData["imgURL"],
+      imgURL: _authController.userObj["imgURL"],
     );
-    var res = await UserController.updateUserProfile(user);
+    var res = await _userController.updateUserProfile(user);
     if (res == 'success') {
       showScaffoldMessenger('Ad updated successfully', 'success');
     } else {
@@ -114,9 +117,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     setState(() {
-      _nameCtrl.text = widget.userData['name'];
-      _emailCtrl.text = widget.userData['email'];
-      _mobileNumberCtrl.text = widget.userData['mobile'];
+      _nameCtrl.text = _authController.userObj['name'];
+      _emailCtrl.text = _authController.userObj['email'];
+      _mobileNumberCtrl.text = _authController.userObj['mobile'];
     });
     super.initState();
   }
@@ -180,12 +183,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       onTap: () {
         uploadProfilePicture();
       },
-      child: CircleAvatar(
-        backgroundColor: CustomColors.greyColor,
-        maxRadius: getProportionateScreenHeight(48),
-        backgroundImage: widget.userData["imgURL"] != ''
-            ? NetworkImage(widget.userData["imgURL"])
-            : null,
+      child: Obx(()=>
+        CircleAvatar(
+          backgroundColor: CustomColors.greyColor,
+          maxRadius: getProportionateScreenHeight(48),
+          backgroundImage: _authController.userObj["imgURL"] != ''
+              ? NetworkImage(_authController.userObj["imgURL"])
+              : null,
+        ),
       ),
     );
   }
